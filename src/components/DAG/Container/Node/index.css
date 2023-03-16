@@ -1,0 +1,39 @@
+.nodeContainer {
+	width: 100%;
+	height: 100%;
+	border-radius: 4px;
+	border: 4px solid;
+	display: flex;
+	flex-direction: column;
+	box-sizing: border-box;
+}
+
+.nodeContainerTitle {
+	display: flex;
+	justify-content: center;
+	border-bottom: 1px black solid;
+	font-weight: 500;
+	font-size: 21px;
+	position: relative;
+}
+
+.nodeContainerContent {
+	font-size: 16px;
+	color: gray;
+	flex: 1 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	padding: 5px;
+	justify-content: space-between;
+}
+
+.subNode {
+	display: flex;
+	border: 3px solid #9bcaef;
+	border-radius: 4px;
+	margin: 1px 0;
+	position: relative;
+	box-sizing: border-box;
+	align-items: center;
+	padding: 4px;
+}

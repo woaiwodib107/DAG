@@ -7,6 +7,7 @@ export const data = {
 			priority: 1,
 			state: 1,
 			type: 'ODPS SQL',
+			detail: '虚拟节点',
 		},
 		{
 			id: 2,
@@ -15,6 +16,7 @@ export const data = {
 			priority: 1,
 			state: 2,
 			type: 'ODPS SQL',
+			detail: '虚拟节点',
 		},
 		{
 			id: 3,

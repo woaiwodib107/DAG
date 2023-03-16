@@ -34,7 +34,7 @@ export const TableGroup = (props) => {
 		layoutNodes = [],
 		layoutNodesObj = {}
 	const nodeWidth = 172
-	const nodeHeight = 36
+	const nodeHeight = 80
 	const border = 5
 	const titleHeight = 36
 	switch (display) {
@@ -45,6 +45,7 @@ export const TableGroup = (props) => {
 						node.nodeWidth = nodeWidth
 						node.nodeHeight = nodeHeight
 						node.count = 1
+						node.type = 'grid'
 						node.nodes = [node]
 						layoutNodesObj[node.id] = {
 							nodeWidth,
@@ -81,6 +82,7 @@ export const TableGroup = (props) => {
 						id: 'merge' + layer,
 						layer,
 						count: l,
+						type: 'merge',
 						name: '共有' + l + '节点',
 						nodeWidth: width,
 						nodeHeight: height,

@@ -3,8 +3,10 @@ import { DisplayButton } from './DisplayButton'
 import { AnalysisButton } from './AnalysisButton'
 import { Container } from './Container'
 import { TypeTable } from './TypeTable'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { data } from './data'
+import * as d3 from 'd3'
+
 const deal = (data) => {
 	const typeArr = Object.keys(data.nodes[0])
 	let nodesObj = {},
@@ -26,33 +28,73 @@ const deal = (data) => {
 	// console.log(nodesLayer)
 	return { typeArr, nodesObj, nodesLayer }
 }
+const { typeArr, nodesObj, nodesLayer } = deal(data)
 
 export const DAG = () => {
 	const [firstNode, setFirstNode] = useState('9')
 	const [display, setDisplay] = useState('grid')
 	const [analysis, setAnalysis] = useState({ top: 0, bottom: 0 })
-	const { typeArr, nodesObj, nodesLayer } = deal(data)
 	const { nodes, edges } = data
 	const [type, setType] = useState(typeArr[0])
 	const width = 1000
 	const height = 1000
+	const svgRef = useRef()
+	const gRef = useRef()
+
+	const zoomed = (event) => {
+		gRef.current &&
+			d3.select(gRef.current).attr('transform', event.transform)
+	}
+
+	const zoom = d3.zoom().extent([
+		[0, 0],
+		[width, height],
+	])
+
+	const bindZoom = () => {
+		svgRef.current &&
+			d3.select(svgRef.current).call(zoom.on('zoom', zoomed))
+	}
+
+	const unbindZoom = () => {
+		svgRef.current && d3.select(svgRef.current).call(zoom.on('zoom', null))
+	}
+	useEffect(() => {
+		bindZoom()
+		return function cleanup() {
+			unbindZoom()
+		}
+	}, [])
 	return (
-		<div>
-			<DisplayButton setDisplay={setDisplay} />
-			<TypeTable typeArr={typeArr} type={type} setType={setType} />
-			<AnalysisButton analysis={analysis} setAnalysis={setAnalysis} />
-			<svg width={width} height={height}>
-				<Container
-					firstNode={firstNode}
-					nodesLayer={nodesLayer}
-					analysis={analysis}
-					nodes={nodes}
-					edges={edges}
-					nodesObj={nodesObj}
-					display={display}
-					type={type}
-				/>
-			</svg>
+		<div className="rootContainer">
+			<div className="leftPanel">
+				<TypeTable typeArr={typeArr} type={type} setType={setType} />
+			</div>
+			<div className="rightPanel">
+				<div className="rightPanelTop">
+					<DisplayButton setDisplay={setDisplay} />
+				</div>
+				<div className="rightPanelContent">
+					<AnalysisButton
+						analysis={analysis}
+						setAnalysis={setAnalysis}
+					/>
+					<svg width={width} height={height} ref={svgRef}>
+						<g ref={gRef}>
+							<Container
+								firstNode={firstNode}
+								nodesLayer={nodesLayer}
+								analysis={analysis}
+								nodes={nodes}
+								edges={edges}
+								nodesObj={nodesObj}
+								display={display}
+								type={type}
+							/>
+						</g>
+					</svg>
+				</div>
+			</div>
 		</div>
 	)
 }
