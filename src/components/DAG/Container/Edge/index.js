@@ -17,32 +17,56 @@ export const Edge = (props) => {
 				const sourceY = nodesPos[source].y + sourceNodeHeight
 				const targetX = nodesPos[target].x + targetNodeWidth / 2
 				const targetY = nodesPos[target].y
-				let R = (targetY - sourceY) / 2
+				// console.log(targetY - sourceY)  50
+				const R = 25
+				// let R = (targetY - sourceY) / 2
 				let path = ''
-				if (sourceX == targetX) {
+				if (Math.abs(targetX - sourceX) < 50) {
 					path = `M ${sourceX} ${sourceY} L${targetX} ${targetY}`
 				} else {
-					if (sourceX < targetX) {
-						path = `M ${sourceX} ${sourceY} Q ${sourceX} ${
-							sourceY + R
-						}, ${sourceX + R} ${sourceY + R} L ${targetX - R} ${
-							targetY - R
-						} Q${targetX} ${targetY - R},${targetX} ${targetY}`
+					if (sourceX == targetX) {
+						path = `M ${sourceX} ${sourceY} L${targetX} ${targetY}`
 					} else {
-						path = `M ${sourceX} ${sourceY} Q ${sourceX} ${
-							sourceY + R
-						}, ${sourceX - R} ${sourceY + R} L ${targetX + R} ${
-							targetY - R
-						} Q${targetX} ${targetY - R},${targetX} ${targetY}`
+						if (sourceX < targetX) {
+							path = `M ${sourceX} ${sourceY} L${sourceX} ${
+								targetY - R - R
+							} Q ${sourceX} ${targetY - R}, ${sourceX + R} ${
+								targetY - R
+							} L ${targetX - R} ${targetY - R} Q${targetX} ${
+								targetY - R
+							},${targetX} ${targetY}`
+						} else {
+							path = `M ${sourceX} ${sourceY} L${sourceX} ${
+								targetY - R - R
+							} Q ${sourceX} ${targetY - R}, ${sourceX - R} ${
+								targetY - R
+							} L ${targetX + R} ${targetY - R} Q${targetX} ${
+								targetY - R
+							},${targetX} ${targetY}`
+						}
 					}
 				}
 				return (
 					<g key={source + '-' + target}>
+						<defs>
+							<marker
+								id="triangle"
+								markerUnits="strokeWidth"
+								markerWidth="5"
+								markerHeight="4"
+								refX="0"
+								refY="2"
+								orient="auto"
+							>
+								<path d="M 0 0 L 5 2 L 0 4 z" />
+							</marker>
+						</defs>
 						<path
 							d={path}
 							stroke="black"
 							fill="transparent"
 							strokeDasharray={type == 'dotted' ? '5,5' : ''}
+							markerEnd="url(#triangle)"
 							// x1={sourceX}
 							// y1={sourceY}
 							// x2={targetX}

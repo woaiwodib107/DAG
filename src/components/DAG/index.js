@@ -32,7 +32,7 @@ const { typeArr, nodesObj, nodesLayer } = deal(data)
 
 export const DAG = () => {
 	const [firstNode, setFirstNode] = useState('9')
-	const [display, setDisplay] = useState('grid')
+	const [display, setDisplay] = useState('Grid')
 	const [analysis, setAnalysis] = useState({ top: 0, bottom: 0 })
 	const { nodes, edges } = data
 	const [type, setType] = useState('')

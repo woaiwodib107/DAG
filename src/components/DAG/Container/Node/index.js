@@ -11,11 +11,11 @@ const borderColor = ['#d4d6e3', '#9dd397', '#f4d3a8']
 const contentColor = ['#f8f8fa', '#f6fef2', '#fdfde8']
 
 const SubNode = (props) => {
-	const { width, detail } = props
+	const { width, detail, name } = props
 	return (
 		<div className="subNode" style={{ width }}>
 			<CodepenOutlined />
-			<div style={{ marginLeft: 5 }}>{detail}</div>
+			<div style={{ marginLeft: 5 }}>{'标题:' + name + ' ' + detail}</div>
 		</div>
 	)
 }
@@ -80,16 +80,21 @@ export const Node = (props) => {
 									className="nodeContainerContent"
 									style={{
 										justifyContent:
-											!hasChildren(node) && 'center',
+											node.type === 'Grid' &&
+											!hasChildren(node) &&
+											'center',
 										alignItems:
-											!hasChildren(node) && 'center',
+											node.type === 'Grid' &&
+											!hasChildren(node) &&
+											'center',
 										background: contentColor[node.state],
 									}}
 								>
-									{node.type !== 'merge' && !hasChildren(node)
+									{node.type === 'Grid' && !hasChildren(node)
 										? node.name + node.detail
 										: node.nodes.map((subnode) => (
 												<SubNode
+													name={subnode.name}
 													detail={subnode.detail}
 													key={subnode.id}
 													width={`${

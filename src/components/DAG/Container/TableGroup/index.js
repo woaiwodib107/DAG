@@ -29,7 +29,8 @@ const getLayoutPos = (nodes, edges) => {
 }
 
 export const TableGroup = (props) => {
-	const { nodes, edges, nodesObj, display, type, nodesLayer } = props
+	const { nodes, edges, nodesObj, display, type, nodesLayer, firstNode } =
+		props
 	let layoutEdges = [],
 		layoutNodes = [],
 		layoutNodesObj = {}
@@ -37,35 +38,80 @@ export const TableGroup = (props) => {
 	const nodeHeight = 80
 	const border = 5
 	const titleHeight = 36
+	const flag = 1
+	if (flag) {
+	}
 	switch (display) {
-		case 'grid':
+		case 'Merge':
 			{
+				let otherNodes = []
+				const firstLayer = nodesObj[firstNode].layer
 				Object.keys(nodesLayer).forEach((layer) => {
-					nodesLayer[layer].forEach((node) => {
-						node.nodeWidth = nodeWidth
-						node.nodeHeight = nodeHeight
-						node.count = 1
-						node.type = 'grid'
-						node.nodes = [node]
-						layoutNodesObj[node.id] = {
-							nodeWidth,
-							nodeHeight,
-						}
-					})
-					layoutNodes = layoutNodes.concat(nodesLayer[layer])
+					if (layer <= firstLayer) {
+						nodesLayer[layer].forEach((node) => {
+							node.nodeWidth = nodeWidth
+							node.nodeHeight = nodeHeight
+							node.count = 1
+							node.type = 'Grid'
+							node.nodes = [node]
+							layoutNodesObj[node.id] = {
+								nodeWidth,
+								nodeHeight,
+							}
+						})
+						layoutNodes = layoutNodes.concat(nodesLayer[layer])
+					}
 				})
-				layoutEdges = edges.map((edge) => {
-					edge.sourceNodeHeight =
-						layoutNodesObj[edge.source].nodeHeight
-					edge.sourceNodeWidth = layoutNodesObj[edge.source].nodeWidth
-					edge.targetNodeHeight =
-						layoutNodesObj[edge.target].nodeHeight
-					edge.targetNodeWidth = layoutNodesObj[edge.target].nodeWidth
-					return edge
+				Object.values(nodesObj).forEach((node) => {
+					if (node.layer > firstLayer) otherNodes.push(node)
+				})
+				const l = otherNodes.length
+				const widthCount = l > 5 ? 5 : l
+				const heightCount = Math.ceil(l / widthCount)
+				const width = widthCount * (nodeWidth + border) + border
+				const height =
+					heightCount * (nodeHeight + border) + border + titleHeight
+				const nodeTem = {
+					id: 'Merge' + firstLayer + 1,
+					layer: firstLayer + 1,
+					count: otherNodes.length,
+					type: 'Merge',
+					name: '共有' + otherNodes.length + '节点',
+					nodeWidth: width,
+					nodeHeight: height,
+					nodes: otherNodes,
+					state: 0,
+				}
+				layoutNodes.push(nodeTem)
+				console.log(firstLayer, otherNodes)
+				edges.forEach((edge) => {
+					if (
+						nodesObj[edge.source].layer <= firstLayer &&
+						nodesObj[edge.target].layer <= firstLayer
+					) {
+						edge.sourceNodeHeight =
+							layoutNodesObj[edge.source].nodeHeight
+						edge.sourceNodeWidth =
+							layoutNodesObj[edge.source].nodeWidth
+						edge.targetNodeHeight =
+							layoutNodesObj[edge.target].nodeHeight
+						edge.targetNodeWidth =
+							layoutNodesObj[edge.target].nodeWidth
+						layoutEdges.push(edge)
+					}
+				})
+				layoutEdges.push({
+					source: firstNode,
+					target: nodeTem.id,
+					type: 'solid',
+					sourceNodeHeight: layoutNodesObj[firstNode].nodeHeight,
+					sourceNodeWidth: layoutNodesObj[firstNode].nodeWidth,
+					targetNodeHeight: height,
+					targetNodeWidth: width,
 				})
 			}
 			break
-		case 'merge':
+		case 'Hierarchy':
 			{
 				const layoutNodesObj = {}
 				Object.keys(nodesLayer).forEach((layer) => {
@@ -79,10 +125,10 @@ export const TableGroup = (props) => {
 						border +
 						titleHeight
 					let node = {
-						id: 'merge' + layer,
+						id: 'Hierarchy' + layer,
 						layer,
 						count: l,
-						type: 'merge',
+						type: 'Hierarchy',
 						name: '共有' + l + '节点',
 						nodeWidth: width,
 						nodeHeight: height,
@@ -99,8 +145,8 @@ export const TableGroup = (props) => {
 				let last = ''
 				Object.keys(nodesLayer).forEach((layer, index) => {
 					if (last != '') {
-						const source = 'merge' + last,
-							target = 'merge' + layer
+						const source = 'Hierarchy' + last,
+							target = 'Hierarchy' + layer
 						layoutEdges.push({
 							source,
 							target,
@@ -112,6 +158,33 @@ export const TableGroup = (props) => {
 						})
 					}
 					last = layer
+				})
+			}
+			break
+		case 'Grid':
+			{
+				Object.keys(nodesLayer).forEach((layer) => {
+					nodesLayer[layer].forEach((node) => {
+						node.nodeWidth = nodeWidth
+						node.nodeHeight = nodeHeight
+						node.count = 1
+						node.type = 'Grid'
+						node.nodes = [node]
+						layoutNodesObj[node.id] = {
+							nodeWidth,
+							nodeHeight,
+						}
+					})
+					layoutNodes = layoutNodes.concat(nodesLayer[layer])
+				})
+				layoutEdges = edges.map((edge) => {
+					edge.sourceNodeHeight =
+						layoutNodesObj[edge.source].nodeHeight
+					edge.sourceNodeWidth = layoutNodesObj[edge.source].nodeWidth
+					edge.targetNodeHeight =
+						layoutNodesObj[edge.target].nodeHeight
+					edge.targetNodeWidth = layoutNodesObj[edge.target].nodeWidth
+					return edge
 				})
 			}
 			break

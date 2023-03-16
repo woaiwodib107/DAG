@@ -61,10 +61,11 @@ export const Container = (props) => {
 			nodesObj={nodesObj}
 			display={display}
 			type={type}
+			firstNode={firstNode}
 		/>
 	)
 	// switch (display) {
-	// 	case 'grid':
+	// 	case 'Grid':
 	// 		return (
 	// 			<TableGroup
 	// 				nodes={analysisNodes}
@@ -81,8 +82,8 @@ export const Container = (props) => {
 	// }
 
 	// switch (display) {
-	// 	case 'grid':
-	// 		return <TableGroup layut={'grid'} table={'sigle'} type={type} />
+	// 	case 'Grid':
+	// 		return <TableGroup layut={'Grid'} table={'sigle'} type={type} />
 	// 	case 'cluster':
 	// 		return 1
 	// }
