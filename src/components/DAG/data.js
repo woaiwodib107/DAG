@@ -127,5 +127,10 @@ export const data = {
 			target: 10,
 			type: 'solid',
 		},
+		{
+			source: 3,
+			target: 6,
+			type: 'solid',
+		},
 	],
 }

@@ -1,6 +1,6 @@
 import { Card, Col, Row } from 'antd'
 export const Node = (props) => {
-	const { nodes, nodesPos, nodeWidth, nodeHeight } = props
+	const { nodes, nodesPos } = props
 	const fill = ['#e5e6eb', '#d9f2d2', '#fbe6c9']
 	return (
 		<g>
@@ -8,17 +8,17 @@ export const Node = (props) => {
 				return (
 					<g key={node.id}>
 						<rect
-							width={nodeWidth}
-							height={nodeHeight}
+							width={node.nodeWidth}
+							height={node.nodeHeight}
 							x={nodesPos[node.id].x}
 							y={nodesPos[node.id].y}
 							fill={fill[node.state]}
 						></rect>
 						<text
-							x={nodesPos[node.id].x + nodeWidth / 2}
-							y={nodesPos[node.id].y + nodeHeight / 2}
+							x={nodesPos[node.id].x + node.nodeWidth / 2}
+							y={nodesPos[node.id].y + node.nodeHeight / 2}
 						>
-							{node.name}
+							{node.id}
 						</text>
 					</g>
 				)

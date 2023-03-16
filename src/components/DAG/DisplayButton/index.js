@@ -12,8 +12,8 @@ export const DisplayButton = (props) => {
 				<i clasee="iconfont icon-flag"></i>
 			</Radio.Button> */}
 			<Radio.Button value="grid">grid</Radio.Button>
-			<Radio.Button value="flag">flag</Radio.Button>
-			<Radio.Button value="d">Chengdu</Radio.Button>
+			<Radio.Button value="merge">merge</Radio.Button>
+			{/* <Radio.Button value="d">Chengdu</Radio.Button> */}
 		</Radio.Group>
 	)
 }

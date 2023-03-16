@@ -1,14 +1,21 @@
 import { Card, Col, Row } from 'antd'
 export const Edge = (props) => {
-	const { nodes, edges, nodesObj, nodesPos, nodeWidth, nodeHeight } = props
+	const { edges, nodesPos } = props
 
 	return (
 		<g>
 			{edges.map((edge) => {
-				const { source, target, type } = edge
-				const sourceX = nodesPos[source].x + nodeWidth / 2
-				const sourceY = nodesPos[source].y + nodeHeight
-				const targetX = nodesPos[target].x + nodeWidth / 2
+				const {
+					source,
+					target,
+					type,
+					sourceNodeWidth,
+					sourceNodeHeight,
+					targetNodeWidth,
+				} = edge
+				const sourceX = nodesPos[source].x + sourceNodeWidth / 2
+				const sourceY = nodesPos[source].y + sourceNodeHeight
+				const targetX = nodesPos[target].x + targetNodeWidth / 2
 				const targetY = nodesPos[target].y
 				return (
 					<g key={source + '-' + target}>

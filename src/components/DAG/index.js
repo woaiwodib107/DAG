@@ -29,26 +29,30 @@ const deal = (data) => {
 
 export const DAG = () => {
 	const [firstNode, setFirstNode] = useState('9')
-	const [display, setDisplay] = useState('1')
+	const [display, setDisplay] = useState('grid')
 	const [analysis, setAnalysis] = useState({ top: 0, bottom: 0 })
 	const { typeArr, nodesObj, nodesLayer } = deal(data)
 	const { nodes, edges } = data
 	const [type, setType] = useState(typeArr[0])
+	const width = 1000
+	const height = 1000
 	return (
 		<div>
 			<DisplayButton setDisplay={setDisplay} />
 			<TypeTable typeArr={typeArr} type={type} setType={setType} />
 			<AnalysisButton analysis={analysis} setAnalysis={setAnalysis} />
-			<Container
-				firstNode={firstNode}
-				nodesLayer={nodesLayer}
-				analysis={analysis}
-				nodes={nodes}
-				edges={edges}
-				nodesObj={nodesObj}
-				display={display}
-				type={type}
-			/>
+			<svg width={width} height={height}>
+				<Container
+					firstNode={firstNode}
+					nodesLayer={nodesLayer}
+					analysis={analysis}
+					nodes={nodes}
+					edges={edges}
+					nodesObj={nodesObj}
+					display={display}
+					type={type}
+				/>
+			</svg>
 		</div>
 	)
 }
