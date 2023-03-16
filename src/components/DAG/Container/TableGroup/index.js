@@ -29,8 +29,21 @@ const getLayoutPos = (nodes, edges) => {
 }
 
 export const TableGroup = (props) => {
-	const { nodes, edges, nodesObj, display, type, nodesLayer, firstNode } =
-		props
+	const {
+		nodes,
+		edges,
+		nodesObj,
+		display,
+		type,
+		nodesLayer,
+		setSelectedNode,
+		selectedNode,
+		visible,
+		setVisible,
+		mousePosition,
+		setMousePosition,
+		setRightNode,
+	} = props
 	let layoutEdges = [],
 		layoutNodes = [],
 		layoutNodesObj = {}
@@ -45,25 +58,23 @@ export const TableGroup = (props) => {
 		case 'Merge':
 			{
 				let otherNodes = []
-				const firstLayer = nodesObj[firstNode].layer
-				Object.keys(nodesLayer).forEach((layer) => {
-					if (layer <= firstLayer) {
-						nodesLayer[layer].forEach((node) => {
-							node.nodeWidth = nodeWidth
-							node.nodeHeight = nodeHeight
-							node.count = 1
-							node.type = 'Grid'
-							node.nodes = [node]
-							layoutNodesObj[node.id] = {
-								nodeWidth,
-								nodeHeight,
-							}
-						})
-						layoutNodes = layoutNodes.concat(nodesLayer[layer])
+				const selectedLayer = selectedNode.layer
+				nodes.forEach((node) => {
+					if (node.layer <= selectedLayer) {
+						node.nodeWidth = nodeWidth
+						node.nodeHeight = nodeHeight
+						node.count = 1
+						node.type = 'Grid'
+						node.nodes = [node]
+						layoutNodesObj[node.id] = {
+							nodeWidth,
+							nodeHeight,
+						}
+						layoutNodes.push(node)
 					}
 				})
 				Object.values(nodesObj).forEach((node) => {
-					if (node.layer > firstLayer) otherNodes.push(node)
+					if (node.layer > selectedLayer) otherNodes.push(node)
 				})
 				const l = otherNodes.length
 				const widthCount = l > 5 ? 5 : l
@@ -72,8 +83,8 @@ export const TableGroup = (props) => {
 				const height =
 					heightCount * (nodeHeight + border) + border + titleHeight
 				const nodeTem = {
-					id: 'Merge' + firstLayer + 1,
-					layer: firstLayer + 1,
+					id: 'Merge' + selectedLayer + 1,
+					layer: selectedLayer + 1,
 					count: otherNodes.length,
 					type: 'Merge',
 					name: '共有' + otherNodes.length + '节点',
@@ -83,11 +94,11 @@ export const TableGroup = (props) => {
 					state: 0,
 				}
 				layoutNodes.push(nodeTem)
-				console.log(firstLayer, otherNodes)
+				// console.log(selectedLayer, otherNodes)
 				edges.forEach((edge) => {
 					if (
-						nodesObj[edge.source].layer <= firstLayer &&
-						nodesObj[edge.target].layer <= firstLayer
+						nodesObj[edge.source].layer <= selectedLayer &&
+						nodesObj[edge.target].layer <= selectedLayer
 					) {
 						edge.sourceNodeHeight =
 							layoutNodesObj[edge.source].nodeHeight
@@ -101,11 +112,12 @@ export const TableGroup = (props) => {
 					}
 				})
 				layoutEdges.push({
-					source: firstNode,
+					source: selectedNode.id,
 					target: nodeTem.id,
 					type: 'solid',
-					sourceNodeHeight: layoutNodesObj[firstNode].nodeHeight,
-					sourceNodeWidth: layoutNodesObj[firstNode].nodeWidth,
+					sourceNodeHeight:
+						layoutNodesObj[selectedNode.id].nodeHeight,
+					sourceNodeWidth: layoutNodesObj[selectedNode.id].nodeWidth,
 					targetNodeHeight: height,
 					targetNodeWidth: width,
 				})
@@ -114,6 +126,7 @@ export const TableGroup = (props) => {
 		case 'Hierarchy':
 			{
 				const layoutNodesObj = {}
+				// nodes.forEach((node) => {
 				Object.keys(nodesLayer).forEach((layer) => {
 					const nodesArr = nodesLayer[layer]
 					const l = nodesArr.length
@@ -163,19 +176,17 @@ export const TableGroup = (props) => {
 			break
 		case 'Grid':
 			{
-				Object.keys(nodesLayer).forEach((layer) => {
-					nodesLayer[layer].forEach((node) => {
-						node.nodeWidth = nodeWidth
-						node.nodeHeight = nodeHeight
-						node.count = 1
-						node.type = 'Grid'
-						node.nodes = [node]
-						layoutNodesObj[node.id] = {
-							nodeWidth,
-							nodeHeight,
-						}
-					})
-					layoutNodes = layoutNodes.concat(nodesLayer[layer])
+				nodes.forEach((node) => {
+					node.nodeWidth = nodeWidth
+					node.nodeHeight = nodeHeight
+					node.count = 1
+					node.type = 'Grid'
+					node.nodes = [node]
+					layoutNodesObj[node.id] = {
+						nodeWidth,
+						nodeHeight,
+					}
+					layoutNodes.push(node)
 				})
 				layoutEdges = edges.map((edge) => {
 					edge.sourceNodeHeight =
@@ -197,6 +208,13 @@ export const TableGroup = (props) => {
 				nodesPos={nodesPos}
 				nodeWidth={nodeWidth}
 				nodeHeight={nodeHeight}
+				selectedNode={selectedNode}
+				setSelectedNode={setSelectedNode}
+				visible={visible}
+				setVisible={setVisible}
+				mousePosition={mousePosition}
+				setMousePosition={setMousePosition}
+				setRightNode={setRightNode}
 			/>
 			<Edge edges={layoutEdges} nodesPos={nodesPos} />
 		</g>

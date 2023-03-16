@@ -93,7 +93,7 @@ export const data = {
 		{
 			id: 12,
 			layer: 7,
-			name: '13',
+			name: '12',
 			priority: 1,
 			state: 0,
 			detail: '虚拟节点',

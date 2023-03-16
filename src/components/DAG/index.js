@@ -6,6 +6,7 @@ import { TypeTable } from './TypeTable'
 import { useState, useRef, useEffect } from 'react'
 import { data } from './data'
 import * as d3 from 'd3'
+import { Button } from 'antd'
 
 const deal = (data) => {
 	const typeArr = Object.keys(data.nodes[0])
@@ -31,7 +32,6 @@ const deal = (data) => {
 const { typeArr, nodesObj, nodesLayer } = deal(data)
 
 export const DAG = () => {
-	const [firstNode, setFirstNode] = useState('9')
 	const [display, setDisplay] = useState('Grid')
 	const [analysis, setAnalysis] = useState({ top: 0, bottom: 0 })
 	const { nodes, edges } = data
@@ -65,6 +65,30 @@ export const DAG = () => {
 			unbindZoom()
 		}
 	}, [])
+	// -1代表没有点击，0代表点击了左键，1代表点击了右键
+	const [rightNode, setRightNode] = useState(-1)
+	const [nowNode, setNowNode] = useState('')
+	const [visible, setVisible] = useState(false)
+	const [mousePosition, setMousePosition] = useState({
+		left: 0,
+		top: 0,
+	})
+	const [selectedNode, setSelectedNode] = useState(nodesObj['9'])
+	const [clickType, setClickType] = useState('None')
+
+	const handleExpandParent = () => {
+		setClickType('father')
+		setNowNode(rightNode)
+		setVisible(false)
+		setMousePosition({ left: 0, top: 0 })
+	}
+
+	const handleExpandChild = () => {
+		setClickType('child')
+		setNowNode(rightNode)
+		setVisible(false)
+		setMousePosition({ left: 0, top: 0 })
+	}
 	return (
 		<div className="rootContainer">
 			<div className="leftPanel">
@@ -79,10 +103,20 @@ export const DAG = () => {
 						analysis={analysis}
 						setAnalysis={setAnalysis}
 					/>
+					<div
+						className="menu"
+						style={{
+							left: mousePosition.left,
+							top: mousePosition.top,
+							display: visible ? 'flex' : 'none',
+						}}
+					>
+						<Button onClick={handleExpandParent}>展开父节点</Button>
+						<Button onClick={handleExpandChild}>展开子节点</Button>
+					</div>
 					<svg width={width} height={height} ref={svgRef}>
 						<g ref={gRef}>
 							<Container
-								firstNode={firstNode}
 								nodesLayer={nodesLayer}
 								analysis={analysis}
 								nodes={nodes}
@@ -90,6 +124,15 @@ export const DAG = () => {
 								nodesObj={nodesObj}
 								display={display}
 								type={type}
+								visible={visible}
+								nowNode={nowNode}
+								clickType={clickType}
+								setVisible={setVisible}
+								mousePosition={mousePosition}
+								setMousePosition={setMousePosition}
+								selectedNode={selectedNode}
+								setSelectedNode={setSelectedNode}
+								setRightNode={setRightNode}
 							/>
 						</g>
 					</svg>
