@@ -35,7 +35,7 @@ export const DAG = () => {
 	const [display, setDisplay] = useState('grid')
 	const [analysis, setAnalysis] = useState({ top: 0, bottom: 0 })
 	const { nodes, edges } = data
-	const [type, setType] = useState(typeArr[0])
+	const [type, setType] = useState('')
 	const width = 1000
 	const height = 1000
 	const svgRef = useRef()

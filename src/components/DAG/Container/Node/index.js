@@ -86,7 +86,7 @@ export const Node = (props) => {
 										background: contentColor[node.state],
 									}}
 								>
-									{!hasChildren(node)
+									{node.type !== 'merge' && !hasChildren(node)
 										? node.name + node.detail
 										: node.nodes.map((subnode) => (
 												<SubNode
